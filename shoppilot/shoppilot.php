@@ -7,7 +7,7 @@
 if (!defined('_PS_VERSION_'))
   exit;
 
-class shoppilot extends Module
+class Shoppilot extends Module
 {
 	public function __construct()
 	{
@@ -65,8 +65,13 @@ class shoppilot extends Module
 
 	public function hookOrderConfirmation($params){
 		$vars = $this->prepareVars($params);
-	  $this->smarty->assign($vars);
-	  return $this->display(__FILE__, 'shoppilot.tpl');
+    if(_PS_VERSION_ < "1.5.0.0") {
+      global $smarty;
+      $smarty->assign($vars);
+    } else {
+	    $this->context->smarty->assign($vars);
+    }
+    return $this->display(__FILE__, 'shoppilot.tpl');
 	}
 
 	public function install()
@@ -105,71 +110,23 @@ class shoppilot extends Module
 
 	public function displayForm()
 	{
-    // Get default Language
-    $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
 
-    // Init Fields form array
-    $fields_form[0]['form'] = array(
-      'legend' => array(
-        'title' => $this->l('Settings'),
-      ),
-      'input' => array(
-        array(
-          'type' => 'text',
-          'label' => $this->l('Token'),
-          'name' => 'SHOPPILOT_TOKEN',
-          'size' => 50,
-          'required' => true
-        ),
-        array(
-          'type' => 'text',
-          'label' => $this->l('Secret key'),
-          'name' => 'SHOPPILOT_SECRET_KEY',
-          'size' => 50,
-          'required' => true
-        )
-      ),
-      'submit' => array(
-        'title' => $this->l('Save'),
-        'class' => 'button'
-        )
-    );
+    $conf = Configuration::getMultiple(array('SHOPPILOT_TOKEN', 'SHOPPILOT_SECRET_KEY'));
 
-    $helper = new HelperForm();
+    return
+      '<br /><fieldset><legend>'.$this->l('Settings').'</legend>
+      <form action="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'" method="post">
+      <label for="serial">'.$this->l('Token').' :</label>
+      <div class="margin-form">
+        <input type="text" name="SHOPPILOT_TOKEN" value="'.$conf['SHOPPILOT_TOKEN'].'" />
+      </div>
+      <label for="address">'.$this->l('Secret key').': </label>
+      <div class="margin-form">
+        <input type="text" name="SHOPPILOT_SECRET_KEY" value="'.$conf['SHOPPILOT_SECRET_KEY'].'" />
+      </div>
+      <input type="submit" name="submitshoppilot" class="button" value="'.$this->l('Save').'" />
+      </form></fieldset>';
 
-    // Module, token and currentIndex
-    $helper->module = $this;
-    $helper->name_controller = $this->name;
-    $helper->token = Tools::getAdminTokenLite('AdminModules');
-    $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
-
-    // Language
-    $helper->default_form_language = $default_lang;
-    $helper->allow_employee_form_lang = $default_lang;
-
-    // Title and toolbar
-    $helper->title = $this->displayName;
-    $helper->show_toolbar = true;        // false -> remove toolbar
-    $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
-    $helper->submit_action = 'submit'.$this->name;
-    $helper->toolbar_btn = array(
-        'save' =>
-        array(
-            'desc' => $this->l('Save'),
-            'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.
-            '&token='.Tools::getAdminTokenLite('AdminModules'),
-        ),
-        'back' => array(
-            'href' => AdminController::$currentIndex.'&token='.Tools::getAdminTokenLite('AdminModules'),
-            'desc' => $this->l('Back to list')
-        )
-    );
-
-    // Load current value
-    $helper->fields_value['SHOPPILOT_TOKEN'] = Configuration::get('SHOPPILOT_TOKEN');
-    $helper->fields_value['SHOPPILOT_SECRET_KEY'] = Configuration::get('SHOPPILOT_SECRET_KEY');
-
-    return $helper->generateForm($fields_form);
 	}
 
 }
