@@ -26,8 +26,8 @@
       var script = document.createElement('script');
       script.type = 'text/javascript';
       script.async = true;
-      script.src = "//shoppilot.dev/scripts/loader.js";
-      script.setAttribute('data-main', "//shoppilot.dev/scripts/main.js");
+      script.src = "//shoppilot.ru/scripts/loader.js";
+      script.setAttribute('data-main', "//shoppilot.ru/scripts/main.js");
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(script, s);
   })();
