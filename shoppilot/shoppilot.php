@@ -13,7 +13,7 @@ class Shoppilot extends Module
 	{
 		$this->name = 'shoppilot';
 		$this->tab = 'front_office_features';
-		$this->version = '1.0';
+		$this->version = '1.1';
 		$this->author = 'Shoppilot';
 		$this->need_instance = 0;
 		$this->dependencies = array('blockcart');

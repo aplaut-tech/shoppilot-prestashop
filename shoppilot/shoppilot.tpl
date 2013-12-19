@@ -1,6 +1,6 @@
 <script>
   var _shoppilot = _shoppilot || [];
-  _shoppilot.push(['token', "{$token}"]);
+  _shoppilot.push(['site_id', "{$token}"]);
   _shoppilot.push(['transaction', {
     "signature":  "{$signature}",
     "number":    "{$order->id}",
@@ -26,8 +26,8 @@
       var script = document.createElement('script');
       script.type = 'text/javascript';
       script.async = true;
-      script.src = "//shoppilot.ru/scripts/loader.js";
-      script.setAttribute('data-main', "//shoppilot.ru/scripts/main.js");
+      script.src = "//ugc.shoppilot.ru/javascripts/require.js";
+      script.setAttribute('data-main', "//ugc.shoppilot.ru/scripts/social-apps.js");
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(script, s);
   })();
